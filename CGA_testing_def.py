@@ -31,13 +31,13 @@ def initPop():
         for x in range(populationSize)]
 
 # assignes fitness score to each individual in population
-def fitnessScore(initPop):
+def fitnessScore(population):
     
-    return [initPop[x].count('1') / bitstringGenomeLength # Returns num of 1 in each individual
+    return [population[x].count('1') / bitstringGenomeLength # Returns num of 1 in each individual
         for x in range(populationSize)]
 
-def weighted(fitnessScore, initPop):
-    return [x / sum(fitnessScore(initPop)) for x in fitnessScore(initPop)]
+def weighted(fitnessScore, population):
+    return [x / sum[fitnessScore[initPop]] for x in fitnessScore[initPop]]
 
 # CUM SUM :P
 # Creates array of cumulutive sums. useful when using roulette

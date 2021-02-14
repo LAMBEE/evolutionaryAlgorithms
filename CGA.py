@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 # Variables for editing
 problemName = 'Max Ones'
-populationSize = 20
+populationSize = 10
 bitstringGenomeLength = 10
 mutationRate = 0.01
 crossoverRate = 0.5
@@ -76,8 +76,39 @@ def mutation(parent, mutationRate): #takes in parent and mutationRate
 	#mutants.append(mutation(initPop[i], 1))
 #mutants
 
+
+            
+def crossover(parents, crossoverRate):
+    children = []
+    rate = crossoverRate
+    x = 0 # parent index
+    while x < len(parents)-1:
+        choice = random.uniform(0, 1) # gen random number
+        if choice <= rate:
+            crossoverPoint = random.randint(1, bitstringGenomeLength-1)
+            ch1 = parents[x][:crossoverPoint] + parents[x+1][crossoverPoint:]
+            ch2 = parents[x+1][:crossoverPoint] + parents[x][crossoverPoint:]
+            children = children + [ch1, ch2]
+        else:
+            children = children + [parents[x], parents[x+1]]
+            
+        x = x + 2
+
+    return children
+
             
             
+                  
+              
+    
+    
+    
+    
+    
+    
+    
+    
+    
             
         
     
