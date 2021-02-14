@@ -5,12 +5,14 @@ import string
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 # Variables for editing
 problemName = 'Max Ones'
-populationSize = 20
-bitstringGenomeLength = 10
-mutationRate = 0.01
+populationSize = 100
+bitstringGenomeLength = 16
+mutationRate = 0.001
 crossoverRate = 0.5
+
 
 # create header
 print('<' + problemName + '>', '<' + str(populationSize) + '>', '<' + str(bitstringGenomeLength) + '>','<' + str(mutationRate) + '>','<' + str(crossoverRate) + '>')
@@ -36,20 +38,21 @@ def fitnessScore(population):
     return [population[x].count('1') / bitstringGenomeLength # Returns num of 1 in each individual
         for x in range(populationSize)]
 
-def weighted(fitnessScore, population):
-    return [x / sum[fitnessScore[initPop]] for x in fitnessScore[initPop]]
+def weighted(score):
+    return [x / sum(score) for x in score]
 
 # CUM SUM :P
 # Creates array of cumulutive sums. useful when using roulette
-prob = np.cumsum(weighted)
+def prob(weightedScore):
+    return np.cumsum(weightedScore)
 
 #pick one individual
-def roulette():
+def roulette(population, probability):
     choice = random.uniform(0, 1)
     i = 0
     while True:
-        if choice <= prob[i]:
-            return initPop[i]
+        if choice <= probability[i]:
+            return population[i]
             break
         # comment in print if you wish to see it iterate for sanity sake
         # print(i) 
@@ -78,14 +81,67 @@ def mutation(parent, mutationRate): #takes in parent and mutationRate
 	#mutants.append(mutation(initPop[i], 1))
 #mutants
 
+
+
+# CROSSOVER FUNCTION
+# TAKES IN PARENT POOL AND CROSSOVER RATE
+def crossover(parents, crossoverRate):
+    children = [] # create empty list
+    # rate = crossoverRate 
+    x = 0 # parent index
+    while x < len(parents)-1: # iterate through parent pool
+        choice = random.uniform(0, 1) # gen random number
+        if choice <= crossoverRate: # crossover event
+            crossoverPoint = random.randint(1, bitstringGenomeLength-1) # choose point for crossover
+            ch1 = parents[x][:crossoverPoint] + parents[x+1][crossoverPoint:] # swap ends
+            ch2 = parents[x+1][:crossoverPoint] + parents[x][crossoverPoint:] # swap ends
+            children = children + [ch1, ch2] # add children too children pool
+        else:
+            children = children + [parents[x], parents[x+1]] # parents didnt mate :( 
+            
+        x = x + 2 # iterate parent index
+
+    return children # returns children pool
             
             
-            
+        
+# #### #
+# MAIN #
+# #### #
+
+generation = 0
+
+totalGens = 1000
+
+pop = initPop()
+avg = 0
+x = []
+y = []
+while avg < .99:
+    score = fitnessScore(pop)
+    weight = weighted(score)
+    probability = prob(weight)
+    parents = []
+    for _ in range(populationSize):
+        parents.append(roulette(pop, probability))
+    mutants = []
+    for i in range(populationSize):
+        mutants.append(mutation(crossover(parents, crossoverRate)[i], mutationRate))
+    pop = mutants
+    
+    # variables for output
+    generation = generation + 1
+    avg = sum(score) / populationSize
+    percent = 1
+    print('<' + str(generation) + '>', '<' + str(max(score)) + '>', '<' + str(avg) + '>')
+    x.append(generation)
+    y.append(avg)
+print('average fitness exceeds .99')
+
         
     
-        
+    
            
-
 
 
 
